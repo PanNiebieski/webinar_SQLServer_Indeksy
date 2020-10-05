@@ -1,0 +1,2276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>Indkesy</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width" />
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,900&amp;subset=latin-ext" rel="stylesheet" />
+    <!-- Shower Theme -->
+    <link rel="stylesheet" href="vendors/shower-ribbon/styles/screen-16x9.css" />
+    <link rel="stylesheet" href="vendors/shower-CezaryWalenciuk/styles/main.css" />
+    <!-- Prism.js -->
+    <link rel="stylesheet" href="vendors/prism/prism.css" />
+    <link rel="stylesheet" href="vendors/prism/custom-prism.css" />
+    <link rel="stylesheet" href="codegrid.css" />
+</head>
+<body class="shower list">
+    <header class="caption">
+        <h1>Indeksy</h1>
+        <p></p>
+    </header>
+
+    <section class="slide front-page">
+
+        <div class="details">
+            <!-- 1. Avatar -->
+
+
+            <h2>Cezary Walenciuk</h2>
+
+            <!-- 3. Presentation title -->
+            <h2 class="bigbig"><strong style="font-size: 35px;  line-height: 1.3;">
+
+                    <span class="titlec1">Indeksy</span>
+                    <span class=""></span></strong></h2>
+
+
+
+            <!-- 5. Contact the speaker -->
+            <h2><a href="https://twitter.com/WalenciukC">@walenciukC</a></h2>
+        </div>
+        <div>
+
+
+            <!-- 2. Speaker -->
+
+        </div>
+        <div class="imag">
+            <img src="images/my-avatar.jpg" alt="Speaker">
+        </div>
+    </section>
+
+    <section class="slide creamB smallest  compact ">
+        <h2>Agenda</h2>
+        <ol>
+            <li class="next">Podział indeksów</li>
+            <li class="next">Indeks Clustered</li>
+            <li class="next">Architektura Indeksu i jego użycie</li>
+            <li class="next">Jak zorganizować indeks i tabele?</li>
+            <li class="next">Wizualizacja systemu</li>
+            <li class="next">Wycena zadań i ich kierunek</li>
+            <li class="next">Indeks NonClustered</li>
+            <li class="next">Jak dopasować indeksy do zapytań</li>
+            <li class="next">Indeksy a zapytania z JOIN-ami</li>
+            <li class="next">Indeksowanie widoków</li>
+            <li class="next">Columnstore</li>
+            <li class="next">Podsumowanie</li>
+        </ol>
+    </section>
+
+    <section class="slide creamB">
+        <span class="shout colors"><span>Tabelki do dema
+        </span></span>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/01.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/02.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide creamB">
+        <span class="shout colors"><span>Indeksy podstawy
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Typy indeksów</h2>
+        <ol>
+            <li class="next">Clustered</li>
+            <li class="next">Nonclustered</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Clustered</h2>
+        <ol>
+            <li class="next">Sortuje dane (zazwyczaj po kluczu głównym)</li>
+            <li class="next">Kierunek sortowania możesz ustalić</li>
+            <li class="next">Jeżeli go nie ma wtedy dane są nieposortowane w strukturze Heap (sterta,kopiec)</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Clustered</h2>
+        <ol>
+            <li class="next">Nie zadziała jeśli twoim kluczem głównym jest typ: GUID</li>
+            <li class="next">Indeks ten nie pochłania żadnej przestrzeni gdyż on tylko układa dane</li>
+            <li class="next">Są to najszybsze indeksy, gdyż nie wymagaja dodatkowego kroku szukania</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Clustered</h2>
+        <ol>
+            <li class="next">Jeżeli twój klucz główny (ID) jest unikatowy to baza danych automatycznie go tworzy</li>
+            <li class="next">Jeśli próbujesz go utworzyć gdy już on istnieje to utworzysz indeks Nonclustered</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Clustered</h2>
+        <ol>
+            <li class="next">Gdy clustered index nie jest unikatowy to wtedy tworzy dodatkowa ukrytą kolumnę (zajmuje ona 4 bajty)</li>
+        </ol>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/03.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 41px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 50px !important;">
+
+                        SELECT 
+                             [Id]
+                            ,[Class]
+                            ,[PowerLevel]
+                            ,[NickName]
+                            ,[Adress]
+                            ,[CustomCodeAbilityId]
+                        FROM [HeroDataBase].[dbo].[SuperHeroes]
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+          </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/4.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/4-1.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 35px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 45px !important;">
+
+                        SELECT [Id]
+                            ,[Class]
+                            ,[PowerLevel]
+                            ,[NickName]
+                            ,[Adress]
+                            ,[CustomCodeAbilityId]
+                        FROM [HeroDataBase].[dbo].[SuperHeroes_NoIndex]
+                        ORDER BY ID DESC
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+          </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/4_2.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/4_3.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide creamG">
+        <span class="shout colors"><span>Najpierw jednak coś o przechowywowaniu danych
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>SQL Server przetrzymuje dane 8kb (8192b) kawałkach, które nazywamy "page" </h2>
+        <ol>
+            <li class="next">"Pages" mają znaczenie nie tylko na dysku, ale także w pamięci</li>
+            <li class="next">Jeśli jesteś wstanie umieść cały rekord do jednego "page" to super</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>SQL Server przetrzymuje dane 8kb (8192b) kawałkach, które nazywa "page" </h2>
+        <ol>
+            <li class="next">Jeśli 1 rekord w tabeli zajmuje 4100 bajtów to tylko on będzie w jednym "page", a reszta (3960) będzie niewykorzystana</li>
+            <li class="next">Dlatego 1 rekord najlepiej, aby reprezentował informację mniejszą niż 4000 bajtów. Wtedy do 1 page trafią 2 rekordy</li>
+        </ol>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/01.jpg" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Architektura indeksu </h2>
+        <ol>
+            <li class="next">SQL Server przetrzymuje dane 8kb kawałkach, które nazywa "page". Dotyczy to też indeksów</li>
+            <li class="next">Te kawałki "pages" są przetrzymwane w strukture drzewiastą (Balance Tree)</li>
+            <li class="next">Załóżony indeks na kolumnie/nach pozwala nam łatwiej wyszukiwać dane</li>
+        </ol>
+    </section>
+
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/02.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/i01.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/i02.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/i03.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/i04.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/i05.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/i06.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/i07.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Operacje indeksowe w Execution Plans</h2>
+        <ol>
+            <li class="next">Index Seek : Nawigacja w dół drzewa, aby znaleźć wartość</li>
+            <li class="next">Index Scan : Przeczytaj kilka lub wszystkie liście drzewa</li>
+            <li class="next">Key Lookup : Pojedyńcze wyszukiwanie</li>
+        </ol>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/i07.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/i08.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/i09.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/i10.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/i11.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I12.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I13.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 38px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 50px !important;">
+
+                        SELECT [MonsterAttackId]
+                        ,[AttackType]
+                        ,[DamageToTheCityInNumbers]
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [AttackType] = 'A' AND 
+                        [DamageToTheCityInNumbers] >= 24928
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+          </div>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 35px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 35px !important;">
+
+                        SELECT 
+                        SUM([DamageToTheCityInNumbers])
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        Group By [AttackType]
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+          </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/06.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamG">
+        <span class="shout colors"><span>Idealny Index
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Idealny index</h2>
+        <ol>
+            <li class="next">Unikatowy</li>
+            <li class="next">Niezmianiający</li>
+            <li class="next">Rosnący ciągle tak samo</li>
+            <li class="next">Wąski</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Wąski</h2>
+        <ol>
+            <li class="next">Im większy indeks tym większe koszty</li>
+            <li class="next">Dla Clustered Indeks to 4/9000 bity</li>
+            <li class="next">Może stworzyć głębsze drzewo</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Niezmianiający</h2>
+        <ol>
+            <li class="next">Zmiana może spowodować rozbicie "Page" i utworzenie pustej "Page"</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Rosnący ciągle tak samo</h2>
+        <ol>
+            <li class="next">Insert losowych wartości w indeksie powoduje rozbijanie struktury "page"</li>
+        </ol>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I14.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Zróbmy test
+        </span></span>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 32px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 42px !important;">
+
+                        CREATE CLUSTERED INDEX idx_MonsterAttacks_ClusteredALL
+                        on dbo.MonsterAttacks_ClusteredALL 
+                        ([MonsterAttackId],[MonsterId],[CityId],
+                        [AttackDate],[AttackType],[DamageToTheCityInNumbers])
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+          </div>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 37px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 52px !important;">
+
+                        CREATE CLUSTERED INDEX 
+                        idx_MonsterAttacks_ClusteredDamagToTheCity
+                        on dbo.MonsterAttacks_ClusteredDamagToTheCity 
+                        (DamageToTheCityInNumbers)
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+          </div>
+    </section>
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 37px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 52px !important;">
+
+                        CREATE CLUSTERED INDEX 
+                        idx_MonsterAttacks_ClusteredAttackDate
+                        on dbo.MonsterAttacks_ClusteredAttackDate 
+                        (AttackDate)
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+          </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/07.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 22px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 22px !important;">
+
+                        CREATE OR ALTER  PROCEDURE [dbo].[InsertMonsterAttacks_ClusteredAttackDate]
+                        AS
+                        
+                        INSERT INTO [MonsterAttacks_ClusteredAttackDate]
+                                   ([MonsterId]
+                                   ,[CityId]
+                                   ,[AttackDate]
+                                   ,[AttackType]
+                                   ,[DamageToTheCityInNumbers])
+                             VALUES
+                                   (1
+                                   ,1
+                                   ,GETDATE()
+                                   ,'T'
+                                   ,RAND(CHECKSUM(NEWID()))*5000)
+                        
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 22px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 22px !important;">
+
+                        CREATE OR ALTER  PROCEDURE [dbo].[UpdateRowMonsterAttacks_ClusteredDamagToTheCity]
+                        AS
+                        
+                        DECLARE @i INT = FLOOR(RAND(CHECKSUM(NEWID())) * 18008)
+                        
+                        UPDATE [dbo].InsertMonsterAttacks_ClusteredDamagToTheCity
+                            SET [DamageToTheCityInNumbers] = RAND(CHECKSUM(NEWID()))*500
+                            WHERE MonsterAttackId = @i;
+                        
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 22px;overflow: hidden;  " class="language-CSHARP">
+                    <code style="line-height: 22px !important;">
+                        //C#
+                        using (var conn = new SqlConnection(connectionString))
+                        {
+                            watch.Start();
+                            conn.Open();
+                            for (int i = 0; i < 5000; i++)
+                            {
+                                using (var command = new SqlCommand(insertProcedureName, conn)
+                                {
+                                    CommandType = CommandType.StoredProcedure
+                                })
+                                {
+                                    command.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Sprawdzenie rozmiarów indeksów na Tabelkach</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 21px;overflow: hidden;  " class="language-CSHARP">
+                    <code style="line-height: 21px !important;">
+                        SELECT OBJECT_NAME(OBJECT_ID) AS TableName,
+                        'Index' = 
+                          CASE 
+                             WHEN index_id  =  0 THEN 'HEAP'
+                             WHEN index_id  = 1  THEN 'Clustered index.'
+                             WHEN index_id  > 1 THEN 'Nonclustered index'
+                             ELSE 'ERROR'
+                        END,
+                        used_page_count,
+                        reserved_page_count,
+                        row_count
+                        FROM sys.dm_db_partition_stats
+                        WHERE OBJECT_NAME(object_id) IN 
+                        (
+                            'MonsterAttacks_ClusteredALL',
+                            'MonsterAttacks_ClusteredAttackDate',
+                            'MonsterAttacks_ClusteredDamagToTheCity',
+                            'MonsterAttacks_ClusteredId'
+                        )
+                        and index_id  = 1
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/08.png" alt="blog">
+            <figcaption class="white">Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/11.png" alt="blog">
+            <figcaption class="white">Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Co trzeba zrobić : Zorganizować tabele</h2>
+        <ol>
+            <li class="next">Tabelka powinna być jak najmniejsza</li>
+            <li class="next">Ograniczyć do minium "page" split</li>
+            <li class="next">Unikać czkawek przy aktualizacji</li>
+            
+        </ol>
+    </section>
+    <section class="slide creamB small compact">
+        <h2>Co trzeba zrobić : Wspieranie jakich zapytań</h2>
+        <ol>
+            <li class="next">Być może będzie trzeba stworzyć indeksy nonclustered</li>
+            <li class="next">Tabelka może zajmować więcej dysku, ale zapytanie będzie działać szybciej</li>
+            <li class="next">Oczywiście, że będą problemy z page split</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Kompromis 1</h2>
+        <ol>
+            <li class="next">W wielu przypadkach wystarczy standardowy indkes na ID, któr jest kluczem głównym</li>
+            <li class="next">Wspierasz tak pewne zapytania (choćby JOIN-y) i spełniasz specfikacje idealnego indeksu</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Kompromis 2</h2>
+        <ol>
+            <li class="next">Załóżmy, że masz tabele gdzie kolumna DATY jest najważniejsza i nie wykonuje się na niej JOINO-wania</li>
+            <li class="next">Może tam wstawić indeks</li>
+            <li class="next">Zakładając też, że DATY są unikatowe i zawsze rosną w przyszłość</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Typy indeksów</h2>
+        <ol>
+            <li class="next">Clustered</li>
+            <li class="next">Nonclustered</li>
+        </ol>
+    </section>
+    <section class="slide creamG">
+        <span class="shout colors"><span>Indeksy Nonclustered
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Indeksy Nonclustered</h2>
+        <ol>
+            <li class="next">Oddzielna struktura od Tabelki</li>
+            <li class="next">Możesz utworzyć ich więcej w danej Tabeli (10 jest ok, 76 to za dużo)</li>
+            <li class="next">Nie muszą zawierać wszystkich kolumn</li>
+            <li class="next">Zawsze są sychronizowne z tabelką</li>
+        </ol>
+    </section>
+    <section class="slide creamG">
+        <span class="shout colors"><span>Predytkaty
+        </span></span>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Predytkaty Równości</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 36px !important;">
+
+                        WHERE DamageToTheCityInNumbers = 105
+
+                        WHERE DamageToTheCityInNumbers = 105 AND
+                        CityId = 2
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Predytkaty Nie równości</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 36px !important;">
+
+                        WHERE DamageToTheCityInNumbers > 5000
+
+                        WHERE DamageToTheCityInNumbers > 5000 AND
+                        CityId = 2
+
+                        WHERE DamageToTheCityInNumbers > 5000 AND
+                        CityId > 3
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Predytkaty połączone z OR</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 36px !important;">
+
+                        WHERE AttackType = 'M' OR AttackType = 'S'
+
+                        WHERE DamageToTheCityInNumbers > 5000 
+                        OR AttackType = 'S'
+
+                        WHERE DamageToTheCityInNumbers > 5000 OR
+                        CityId > 3
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Jak tam JOIN-y</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 30px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 40px !important;">
+
+                        SELECT 
+                            F.[DidDefeatMonster],
+                            MA.AttackDate,
+                            M.Name,
+                            M.DisasterLevel
+                        FROM [HeroDataBase].[dbo].[Fight] AS F
+                        INNER JOIN [MonsterAttacks] AS MA ON 
+                        MA.MonsterAttackId = F.MonsterAttackId
+                        INNER JOIN [Monster] AS M ON M.IdMonster = MA.MonsterId
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/01.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamG">
+        <span class="shout colors"><span>Zasady dla równości
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Zasady dla równości</h2>
+        <ol>
+            <li class="next">Zapytanie musi filtrować zgodnie z lewym podzbiorem danego indeksu</li>
+            <li class="next">Kolejność kolumn ma jednak zaczenie gdyd chcemy aby wiele zapytań mogło skorzystać z jednego indeksu</li>
+        </ol>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I15.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/02.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I16.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I17.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>A co teraz?
+        </span></span>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I18.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>A to da radę?
+        </span></span>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I19.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I20.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I21.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Zmiana indeksu kolejeności indeksu
+        </span></span>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I22.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I23.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I24.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Co jeśli mamy wiele zapytań
+        </span></span>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I25.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I26.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I27.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I28.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamG">
+        <span class="shout colors"><span>Zasady dla NIE równości
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Zasady dla NIE równości</h2>
+        <ol>
+            <li class="next">Lewy podzbiór indeksu ma znaczenie</li>
+            <li class="next">Kolumny równości mają pierwszeństwo przed kolumnami nierówności</li>
+            <li class="next">Wiele nierówności ciężko jest zaindeksować</li>
+        </ol>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I29N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <!-- <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I30N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section> -->
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I31N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I32N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I32N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I33N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I34N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I35N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I36N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I36N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I37N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I38N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I39N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I40N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide creamB">
+        <span class="shout colors"><span>Zobaczmy to w praktyce
+        </span></span>
+    </section>
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Zapytanie dla CityId = 4</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 50px !important;">
+
+                        SELECT  [MonsterAttackId]
+                        ,[CityId]
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [CityId] = 4
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/12.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Indeks NONCLUSTERED na CityId </h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 46px !important;">
+
+                        CREATE NONCLUSTERED INDEX 
+                        idx_MonsterAttacks_CityId 
+                        ON [dbo].[MonsterAttacks](CityId);
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/14.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/13.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Równości WHERE [AttackType] = 'S';</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 46px !important;">
+
+                        SELECT  [MonsterAttackId]
+                        ,[AttackType]
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [AttackType] = 'S';
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/15.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Tworze kolejny indeks NonClustered dla [AttackType]
+        </span></span>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/14.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Równości [AttackType] = 'S' AND [CityId] = 51</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 46px !important;">
+
+                        SELECT  [MonsterAttackId]
+                        ,[AttackType]
+                        ,[CityId]
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [AttackType] = 'S' AND [CityId] = 51
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/17.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Tworze kolejny indeks NonClustered dla [AttackType,CityId]
+        </span></span>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/18.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/19.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+
+
+
+
+
+
+
+    <section class="slide creamB">
+        <span class="shout colors"><span>Predytkaty nierówności
+        </span></span>
+    </section>
+
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Predytkaty nierówności</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 21px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 31px !important;">
+
+                        SELECT  [MonsterAttackId]
+                        ,[DamageToTheCityInNumbers]
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [DamageToTheCityInNumbers] > 9000
+                  
+                        SELECT  [MonsterAttackId]
+                                ,[DamageToTheCityInNumbers], [CityId] 
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [DamageToTheCityInNumbers] > 9000 AND [CityId] = 175
+                  
+                        SELECT  [MonsterAttackId]
+                                ,[DamageToTheCityInNumbers], [AttackDate] 
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [DamageToTheCityInNumbers] > 9000 AND [AttackDate] < '2019-10-02'
+                  
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/20.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/21.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/22.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    
+    <section class="slide creamB">
+        <span class="shout colors"><span>Jak kto jest z operacją OR
+        </span></span>
+    </section>
+
+    <section class="slide creamB  compact">
+        <h2>Jak kto jest z operacją OR</h2>
+        <ol>
+            <li class="next">Zwiększają rezultat lub go nie zmieniają</li>
+            <li class="next">Potrzeba wielu indeksów, aby operacja OR została wykonana najlepiej</li>
+        </ol>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Predytkaty połączone z OR</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 36px !important;">
+
+                        SELECT  [MonsterAttackId]
+                        ,[DamageToTheCityInNumbers], [AttackDate] 
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [DamageToTheCityInNumbers] > 8000 
+                        OR [AttackDate] < '2019-10-10'
+                  
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/23.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Załóżmy 1 indeks na ([DamageToTheCityInNumbers]), i drugi na ([AttackDate])
+        </span></span>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Predytkaty połączone z OR</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 36px !important;">
+
+                        SELECT  [MonsterAttackId]
+                        ,[DamageToTheCityInNumbers], [AttackDate] 
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [DamageToTheCityInNumbers] = 8000 
+                        OR [AttackDate] = '2019-10-10'
+                  
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/24.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Indeksowanie, a JOIN-y i operacje
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Jakiś słownik? Algorytmy scalajace rekordy</h2>
+        <ol>
+            <li class="next">Nested loop joins : to algorytm dwóch pętli chodząca po dwóch tabelach. Wykonują one operacje Join-owania. Wydajna gdy mamy indeksy</li>
+            <li class="next">Hash match :  Analizator go wybiera, gdy mamy dużo rekordów do łączenia</li>
+            <li class="next">Merge :  Scala wartości dwóch tabel i później je sortuje </li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Jakiś słownik? Słowa kluczowe Merge Join i Hash Join</h2>
+        <ol>
+            <li class="next">Merge Joins :  Scala wartości dwóch tabel i później sortuje</li>
+            <li class="next">Hash Joins : buduje w pamięci tabelę hash na bazie wewnętrznej dołączanej kolumny. Potem zewnętrzna tabelka jest porównywana z hash tabel.</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Indeksowanie, a JOIN-y i operacje</h2>
+        <ol>
+            <li class="next">Nested loop joins : lubią indeks na wewnętrznej tabeli</li>
+            <li class="next">Merge Joins : mogą mieć korzyści z indeksów które dają odpowiednią kolejność</li>
+            <li class="next">Hash Joins : nie dostaja żadnych zalet z indeksów</li>
+        </ol>
+    </section>
+
+
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">JOIN</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 26px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 36px !important;">
+
+                        SELECT 
+                            F.[DidDefeatMonster],
+                            MA.AttackDate,
+                            M.Name,
+                            M.DisasterLevel
+                        FROM [HeroDataBase].[dbo].[Fight] AS F
+                        INNER JOIN [MonsterAttacks] AS MA 
+                        ON MA.MonsterAttackId = F.MonsterAttackId
+                        INNER JOIN [Monster] AS M ON M.IdMonster = MA.MonsterId
+                        WHERE M.Name = 'Geryuganshoop'
+                  
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/25.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/26.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/27.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/28.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/29.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/30.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/31.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/32.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/33.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 26px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 36px !important;">
+
+                        SELECT 
+                            F.[DidDefeatMonster],
+                            MA.AttackDate,
+                            M.Name,
+                            M.DisasterLevel
+                        FROM [HeroDataBase].[dbo].[Fight] AS F
+                        INNER MERGE JOIN [MonsterAttacks] AS MA 
+                        ON MA.MonsterAttackId = F.MonsterAttackId
+                        INNER MERGE JOIN [Monster] AS M ON M.IdMonster = MA.MonsterId
+                        WHERE M.Name = 'Geryuganshoop'
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/34.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 26px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 36px !important;">
+
+                        SELECT 
+                            F.[DidDefeatMonster],
+                            MA.AttackDate,
+                            M.Name,
+                            M.DisasterLevel
+                        FROM [HeroDataBase].[dbo].[Fight] AS F
+                        INNER HASH JOIN [MonsterAttacks] AS MA 
+                        ON MA.MonsterAttackId = F.MonsterAttackId
+                        INNER HASH JOIN [Monster] AS M ON M.IdMonster = MA.MonsterId
+                        WHERE M.Name = 'Geryuganshoop'
+                  
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/35.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Indeksy i dodanie do nich kolumn
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Indeksy i dodanie do nich kolumn</h2>
+        <ol>
+            <li class="next">Dodanie kolumny/kolumn na poziomie liścia w indeksie</li>
+            <li class="next">Używa się tej techniki, aby uniknąć operacji "key lookup"</li>
+            <li class="next">Key Lookup : Pojedyńcze wyszukiwanie przy clustered index</li>
+        </ol>
+    </section>
+
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I41.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Key Lookups</h2>
+        <ol>
+            <li class="next">Single Row Seek: Poszukiwanie w rekordu w clustered index</li>
+            <li class="next">Pobiera kolumny które są wymagane, ale nie są przez indeks używane</li>
+            <li class="next">Powolne jeśli jest duża liczba wyników</li>
+        </ol>
+    </section>
+
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I43.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Przykład
+        </span></span>
+    </section>
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 32px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 36px !important;">
+
+                        SELECT [MonsterAttackId]
+                            ,[CityId]
+                            ,[AttackDate]
+                            ,[AttackType]
+                            ,[DamageToTheCityInNumbers]
+                            ,[IsDone]
+                            ,[IsRepaired]
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [CityId] = 2487 AND [AttackType] = 'J'
+                    
+                        CREATE NONCLUSTERED INDEX idx_test2 ON 
+                        [dbo].[MonsterAttacks]([CityId],[AttackType])
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/39.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <!-- <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 46px !important;">
+
+                        SELECT [MonsterAttackId]
+                            ,[CityId]
+                            ,[AttackDate]
+                            ,[AttackType]
+                            ,[DamageToTheCityInNumbers]
+                            ,[IsDone]
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [CityId] = 2487 AND [AttackType] = 'J'
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 26px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 26px !important;">
+
+                        SELECT [MonsterAttackId]
+                            ,[CityId]
+                            ,[AttackDate]
+                            ,[AttackType]
+                            ,[DamageToTheCityInNumbers]
+                            ,[IsDone]
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [CityId] = 2487 AND [AttackType] = 'J'
+                    
+                        CREATE NONCLUSTERED INDEX idx_test3 ON 
+                        [dbo].[MonsterAttacks]([CityId],[AttackType])
+                        INCLUDE([DamageToTheCityInNumbers],[AttackDate],
+                        [MonsterAttackId],[IsDone])
+                                
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/40.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+
+
+    <section class="slide creamG">
+        <span class="shout colors"><span>Filtry na Indeksach
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Filtry na  Indeksach</h2>
+        <ol>
+            <li class="next">Możesz zaindeksować część rekordów w tabelce</li>
+            <li class="next">Przydatne gdy wiesz, że pewne dane nie powinny być odczytywane</li>
+            <li class="next">Nie działa z zapytaniami które maja parametry</li>
+        </ol>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 36px !important;">
+
+                        SELECT [MonsterAttackId]
+                        ,[CityId]
+                        ,[AttackType]
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [CityId] = 2487 AND [AttackType] = 'J'
+                  
+                        CREATE NONCLUSTERED INDEX idx_Test ON 
+                        [dbo].[MonsterAttacks]([CityId])
+                        WHERE [AttackType] = 'J'
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/36.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section> -->
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/37.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Predytkaty połączone z OR</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 36px !important;">
+
+                        DECLARE @CityId INT = 2487, 
+                        @AttackType CHAR(1) = 'J'
+
+                        SELECT [MonsterAttackId]
+                            ,[CityId]
+                            ,[AttackType]
+                        FROM [HeroDataBase].[dbo].[MonsterAttacks]
+                        WHERE [CityId] = @CityId 
+                        AND [AttackType] = @AttackType
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/38.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide creamG">
+        <span class="shout colors"><span>Jak wiele indeksów NonClustered?
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Jak wiele indeksów NonClustered</h2>
+        <ol>
+            <li class="next">Tyle ile potrzebujesz</li>
+            <li class="next">Nie ma jednak sensu tworzyć indeks NonClustered per kolumna</li>
+            <li class="next">Lepiej jest przeanalizować jakie zapytania będą trafiać do tej właśnie tabelki</li>
+        </ol>
+    </section>
+    <section class="slide creamG">
+        <span class="shout colors"><span>Indeksy dla View
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Indeksy dla View</h2>
+        <ol>
+            <li class="next">Normalnie View(widoki) są zapisanymi wyrażeniami SELECT</li>
+            <li class="next">Jest możliwe utworzenie indeksu clustered na widoku (ale nie każdym)</li>
+            <li class="next">Materializuje to widok w taki sposób jakby to była tabela</li>
+            <li class="next">Dane widoku są aktualizowane nabierzącą gdy główna tabela, która ją reprezentuje się zmieni</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Istnieją jednak ograniczenia</h2>
+        <ol>
+            <li class="next">Blokuje ona główną tabele do zmian (najpier musisz skasować indeks z widoku, skasować widok, zrobić zmianę na tabeli i utworzyć wszystko od nowa)</li>
+            <li class="next">Widok nie może zawierać pod zapytań</li>
+            <li class="next">Wszystkie JOIN w widoku muszą być INNER LEFT JOINS</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Gdzie są użyteczne?</h2>
+        <ol>
+            <li class="next">Do Agregacji</li>
+            <li class="next">Proste zapytania z JOIN-ami i filtrami</li>
+        </ol>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 21px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 21px !important;">
+
+                        CREATE OR ALTER VIEW dbo.MonsterAttacksWithTotals
+                        WITH SCHEMABINDING
+                        AS
+                        
+                        SELECT
+                        COUNT_BIG(*) AS NumberOfAttacks,
+                        ma.CityId,
+                        SUM(ma.DamageToTheCityInNumbers) AS TotalDamage,
+                        AVG(ma.DamageToTheCityInNumbers) AS AVGDamage
+                        FROM [dbo].[MonsterAttacks] AS ma
+                        GROUP BY ma.CityId
+                        HAVING COUNT_BIG(*)< 100 AND COUNT_BIG(*) > 2
+                        
+                        GO
+                        
+                        CREATE UNIQUE CLUSTERED INDEX idx_MonsterAttacksWithTotals
+                        ON dbo.MonsterAttacksWithTotals (CityId);
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/42.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/43.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 26px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 26px !important;">
+
+                        CREATE OR ALTER VIEW dbo.MonsterAttacksWithTotals
+                        WITH SCHEMABINDING
+                        AS
+                        
+                        SELECT
+                        COUNT_BIG(*) AS NumberOfAttacks,
+                        ma.CityId,
+                        SUM(ma.DamageToTheCityInNumbers) AS TotalDamage
+                        FROM [dbo].[MonsterAttacks] AS ma
+                        GROUP BY ma.CityId
+                        
+                        GO
+                        
+                        CREATE UNIQUE CLUSTERED INDEX idx_MonsterAttacksWithTotals
+                        ON dbo.MonsterAttacksWithTotals (CityId);
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/44.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Wady indeksów w widokach</h2>
+        <ol>
+            <li class="next">Przeciążanie jeśli tabelka główna jest ciagle aktualizowana/kasowana </li>
+            <li class="next">Zajmują przestrzeń pamięci</li>
+            <li class="next">Niesamowite wymagania i ustawienia SET Options</li>
+        </ol>
+    </section>
+    <section class="slide creamG">
+        <span class="shout colors"><span>Indeksy ColumnStore
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Indeksy ColumnStore</h2>
+        <ol>
+            <li class="next">Pojawił się w SQL Server 2012, ale dopiero teraz działa on dobrze</li>
+            <li class="next">Są to zupełnie inne indexy gdzie dane są przetrzymywane innaczej</li>
+            <li class="next">Dane z kolumn są przechowywane razem</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Indeksy ColumnStore</h2>
+        <ol>
+            <li class="next">Są skompresowane więc są super dla gigatycznych liczb rekordów np. 2 miliony</li>
+        </ol>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Architektura ColumnStore Index
+        </span></span>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 26px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 26px !important;">
+
+                        CREATE NONCLUSTERED COLUMNSTORE INDEX 
+                        [NonClusteredColumnStoreIndex-20201004] 
+                        ON [dbo].[MonsterAttacks_ColumnIndex]
+                        (
+                            [MonsterAttackId],
+                            [AttackDate],
+                            [AttackType],
+                            [DamageToTheCityInNumbers]
+                        )
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore16.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore17.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore18.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:white">
+        <figure>
+            <img class="cover" src="pictures/columnstore19.gif" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Typy Indeksy ColumnStore</h2>
+        <ol>
+            <li class="next">Clustered ColumnStore : Organizuje tabele i zawiera wszystkie kolumny</li>
+            <li class="next">NonClustered columnstore : Zawiera tylko kolumny, które określiśmy</li>
+        </ol>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore9.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore10.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE"></h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 26px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 26px !important;">
+
+                        SELECT [Id]
+                            ,[Class]
+                            ,[PowerLevel]
+                            ,[NickName]
+                            ,[Adress]
+                        FROM [HeroDataBase].[dbo].[SuperHeroes_ColumnIndex]
+                    
+                    
+                        SELECT [Id]
+                            ,[Class]
+                            ,[PowerLevel]
+                            ,[NickName]
+                            ,[Adress]
+                        FROM [HeroDataBase].[dbo].[SuperHeroes]
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore12.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore11.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Kiedy ColumnStore</h2>
+        <ol>
+            <li class="next">Clustered ColumnStore : na dużych tabelach</li>
+            <li class="next">NonClustered columnstore : może pomóc w wyszukiwaniach </li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>ColumnStore słaby dla tabel gdy często ją modyfikujemy</h2>
+        <ol>
+            <li class="next">DeltaStore jest Drzewem</li>
+            <li class="next">Nowe rekordy nie są skompresowane</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>ColumnStore </h2>
+        <ol>
+            <li class="next">Kompresja działa najlepiej dla powtarzających się danych</li>
+            <li class="next">Nie może być używany do operacji "SEEK"</li>
+        </ol>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>ColumnStore </h2>
+        <ol>
+            <li class="next">Kolejność kolumn w tym indeksie nie ma znaczenia</li>
+        </ol>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Predytkaty połączone z OR</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 26px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 26px !important;">
+
+                        SELECT 
+                            OBJECT_ID,
+                            index_id,
+                            used_page_count,
+                            reserved_page_count,
+                            row_count,
+                            OBJECT_NAME(OBJECT_ID)
+                        FROM sys.dm_db_partition_stats 
+                        WHERE OBJECT_ID = OBJECT_ID('SuperHeroes_ColumnIndex') 
+                        OR OBJECT_ID = OBJECT_ID('MonsterAttacks_ColumnIndex');
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Predytkaty połączone z OR</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 26px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 26px !important;">
+
+                        SELECT OBJECT_NAME(OBJECT_ID),* FROM sys.column_store_row_groups;
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide creamG">
+        <span class="shout colors"><span>Podsumowanie
+        </span></span>
+    </section>
+    <!-- <div class="progress"></div> -->
+    <footer class="badge badge-top-left">
+        <a href="#" class="fullscreen">Fullscreen</a>
+    </footer>
+
+    <script src="vendors/gamepad/gamepad.js"></script>
+    <script src="vendors/shower/shower.min.js"></script>
+    <script src="vendors/shower-gamepad/shower.gamepad.js"></script>
+
+    <!-- Prism.js -->
+    <script src="vendors/prism/prism.js"></script>
+    <script src="vendors/prism/custom-prism.js"></script>
+
+</body>
+
+</html>
