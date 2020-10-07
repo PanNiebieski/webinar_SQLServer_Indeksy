@@ -115,7 +115,7 @@
         <h2>Clustered</h2>
         <ol>
             <li class="next">Jeżeli twój klucz główny (ID) jest unikatowy to baza danych automatycznie go tworzy</li>
-            <li class="next">Jeśli próbujesz go utworzyć gdy już on istnieje to utworzysz indeks Nonclustered</li>
+            <li class="next">Jeśli próbujesz go utworzyć gdy już on istnieje to...pojawi się sugestia, aby utworzyć indeks Nonclustered</li>
         </ol>
     </section>
     <section class="slide creamB  compact">
@@ -1844,7 +1844,7 @@
     <section class="slide prism over bhgry">
         <div class="grid-container">
             <div class="HeaderTitle">
-                <h2 class="headerCODE">Predytkaty połączone z OR</h2>
+                <h2 class="headerCODE">Problem z filtrem gdy korzystamy z parametrów</h2>
             </div>
             <div class="PlaceCodeHere">
                 <pre style="font-size: 36px;overflow: hidden;  " class="language-sql">
@@ -1896,7 +1896,7 @@
         <span class="shout colors"><span>Indeksy dla View
         </span></span>
     </section>
-    <section class="slide creamB  compact">
+    <section class="slide creamB small compact">
         <h2>Indeksy dla View</h2>
         <ol>
             <li class="next">Normalnie View(widoki) są zapisanymi wyrażeniami SELECT</li>
@@ -2019,9 +2019,9 @@
     <section class="slide creamB  compact">
         <h2>Wady indeksów w widokach</h2>
         <ol>
-            <li class="next">Przeciążanie jeśli tabelka główna jest ciagle aktualizowana/kasowana </li>
+            <li class="next">Przeciążanie, jeśli tabelka główna jest ciagle aktualizowana/kasowana </li>
             <li class="next">Zajmują przestrzeń pamięci</li>
-            <li class="next">Niesamowite wymagania i ustawienia SET Options</li>
+            <li class="next">Niesamowite wymagania i ustawienia "SET Options"</li>
         </ol>
     </section>
     <section class="slide creamG">
@@ -2188,7 +2188,7 @@
         <h2>ColumnStore </h2>
         <ol>
             <li class="next">Kompresja działa najlepiej dla powtarzających się danych</li>
-            <li class="next">Nie może być używany do operacji "SEEK"</li>
+            <li class="next">Nie może być używany do operacji "SEEK" (operacja 'SEEK' zamienia się w opracje 'Scan')</li>
         </ol>
     </section>
     <section class="slide creamB  compact">
@@ -2200,7 +2200,7 @@
     <section class="slide prism over bhgry">
         <div class="grid-container">
             <div class="HeaderTitle">
-                <h2 class="headerCODE">Predytkaty połączone z OR</h2>
+                <h2 class="headerCODE">Dane na temat SuperHeroes_ColumnInde : Ile zajmuje PAGE</h2>
             </div>
             <div class="PlaceCodeHere">
                 <pre style="font-size: 26px;overflow: hidden;  " class="language-sql">
@@ -2230,10 +2230,16 @@
             </div>
         </div>
     </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore20.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
     <section class="slide prism over bhgry">
         <div class="grid-container">
             <div class="HeaderTitle">
-                <h2 class="headerCODE">Predytkaty połączone z OR</h2>
+                <h2 class="headerCODE">Jak jest skompresowane? Columnstore</h2>
             </div>
             <div class="PlaceCodeHere">
                 <pre style="font-size: 26px;overflow: hidden;  " class="language-sql">
@@ -2254,8 +2260,113 @@
             </div>
         </div>
     </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore21.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Zróbmy 18008 Insertów</h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 26px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 26px !important;">
+
+                        INSERT INTO [dbo].[SuperHeroes_ColumnIndex]
+                        ([Class]
+                        ,[PowerLevel]
+                        ,[NickName]
+                        ,[Adress])
+                        VALUES
+                        ('Y'
+                        ,@randompowerlevel
+                        ,@randomname
+                        ,@randomname2)
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore22.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide prism over bhgry">
+        <div class="grid-container">
+            <div class="HeaderTitle">
+                <h2 class="headerCODE">Zróbmy 5000 losowych kasowań i 18000 update-ów </h2>
+            </div>
+            <div class="PlaceCodeHere">
+                <pre style="font-size: 31px;overflow: hidden;  " class="language-sql">
+                    <code style="line-height: 31px !important;">
+
+                        DECLARE @i INT = FLOOR(RAND(CHECKSUM(NEWID())) * 18008)
+
+                        UPDATE [dbo].[SuperHeroes_ColumnIndex]
+                            SET [PowerLevel] = RAND(CHECKSUM(NEWID()))*500
+                            WHERE Id = @i;
+
+                        DECLARE @j INT = FLOOR(RAND(CHECKSUM(NEWID())) * 18008)
+
+                        DELETE [dbo].[SuperHeroes_ColumnIndex]
+                            WHERE Id = @j;
+                            
+
+                    </code>
+                </pre>
+            </div>
+            <div class="AnswerCode">
+                <div class="pytanie">
+                    <h3></h3>
+                </div>
+                <div class="odpowiedz">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore23.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore24.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Zrobiłem losowe 18000 updatów, aby się upewnić jak są one traktowane przez Columnstore Index
+        </span></span>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/columnstore25.PNG" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
     <section class="slide creamG">
         <span class="shout colors"><span>Podsumowanie
+        </span></span>
+    </section>
+    <section class="slide creamG">
+        <span class="shout colors"><span>Dzięki za obecność
         </span></span>
     </section>
     <!-- <div class="progress"></div> -->
