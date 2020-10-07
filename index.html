@@ -363,6 +363,7 @@
                         WHERE [AttackType] = 'A' AND 
                         [DamageToTheCityInNumbers] >= 24928
 
+                        -- SCAN or SEEK
                     </code>
                 </pre>
             </div>
@@ -375,6 +376,13 @@
                 </div>
             </div>
           </div>
+    </section>
+
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/06.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
     </section>
     <section class="slide prism over bhgry">
         <div class="grid-container">
@@ -389,6 +397,8 @@
                         SUM([DamageToTheCityInNumbers])
                         FROM [HeroDataBase].[dbo].[MonsterAttacks]
                         Group By [AttackType]
+
+                        -- SCAN
                     </code>
                 </pre>
             </div>
@@ -402,37 +412,35 @@
             </div>
           </div>
     </section>
-    <section class="slide" style="background-color:black">
-        <figure>
-            <img class="cover" src="pictures/06.png" alt="blog">
-            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
-        </figure>
-    </section>
     <section class="slide creamG">
-        <span class="shout colors"><span>Idealny Index
+        <span class="shout colors"><span>Idealny Index na jakiej kolumnie
         </span></span>
     </section>
     <section class="slide creamB  compact">
         <h2>Idealny index</h2>
         <ol>
-            <li class="next">Unikatowy</li>
-            <li class="next">Niezmianiający</li>
-            <li class="next">Rosnący ciągle tak samo</li>
-            <li class="next">Wąski</li>
+            <li class="next">Unikatowy (ma unikatowe wartości)</li>
+            <li class="next">Niezmieniający</li>
+            <li class="next">Rosnący według wzoru (do góry, do dołu)</li>
+            <li class="next">Wąski (ile kolumn chcesz w indeksie)</li>
+        </ol>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Spełnienie tych wszystkich zasad może być trudne
+        </span></span>
+    </section>
+    <section class="slide creamB  compact">
+        <h2>Niezmieniający</h2>
+        <ol>
+            <li class="next">Zmiana może spowodować rozbicie "Page" i utworzenie pustej "Page"</li>
         </ol>
     </section>
     <section class="slide creamB  compact">
         <h2>Wąski</h2>
         <ol>
-            <li class="next">Im większy indeks tym większe koszty</li>
+            <li class="next">Im większy indeks tym większe koszty w przestrzeni</li>
             <li class="next">Dla Clustered Indeks to 4/9000 bity</li>
             <li class="next">Może stworzyć głębsze drzewo</li>
-        </ol>
-    </section>
-    <section class="slide creamB  compact">
-        <h2>Niezmianiający</h2>
-        <ol>
-            <li class="next">Zmiana może spowodować rozbicie "Page" i utworzenie pustej "Page"</li>
         </ol>
     </section>
     <section class="slide creamB  compact">
@@ -720,14 +728,14 @@
     <section class="slide creamB  compact">
         <h2>Kompromis 1</h2>
         <ol>
-            <li class="next">W wielu przypadkach wystarczy standardowy indkes na ID, któr jest kluczem głównym</li>
+            <li class="next">W wielu przypadkach wystarczy standardowy indeks clustered na ID, który jest kluczem głównym</li>
             <li class="next">Wspierasz tak pewne zapytania (choćby JOIN-y) i spełniasz specfikacje idealnego indeksu</li>
         </ol>
     </section>
     <section class="slide creamB  compact">
         <h2>Kompromis 2</h2>
         <ol>
-            <li class="next">Załóżmy, że masz tabele gdzie kolumna DATY jest najważniejsza i nie wykonuje się na niej JOINO-wania</li>
+            <li class="next">Załóżmy, że masz tabele gdzie kolumna DATY </li>
             <li class="next">Może tam wstawić indeks</li>
             <li class="next">Zakładając też, że DATY są unikatowe i zawsze rosną w przyszłość</li>
         </ol>
@@ -885,7 +893,7 @@
         <h2>Zasady dla równości</h2>
         <ol>
             <li class="next">Zapytanie musi filtrować zgodnie z lewym podzbiorem danego indeksu</li>
-            <li class="next">Kolejność kolumn ma jednak zaczenie gdyd chcemy aby wiele zapytań mogło skorzystać z jednego indeksu</li>
+            <li class="next">Kolejność kolumn ma zaczenie gdy chcemy aby wiele zapytań mogło skorzystać z jednego indeksu</li>
         </ol>
     </section>
     <section class="slide" style="background-color:black">
@@ -922,15 +930,16 @@
             <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
         </figure>
     </section>
-    <section class="slide creamB">
-        <span class="shout colors"><span>A to da radę?
-        </span></span>
-    </section>
+
     <section class="slide" style="background-color:black">
         <figure>
             <img class="cover" src="pictures/I19.png" alt="blog">
             <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
         </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>A to da radę?
+        </span></span>
     </section>
     <section class="slide" style="background-color:black">
         <figure>
@@ -946,7 +955,7 @@
         </figure>
     </section>
     <section class="slide creamB">
-        <span class="shout colors"><span>Zmiana indeksu kolejeności indeksu
+        <span class="shout colors"><span>Zmiana indeksu : co teraz gdy jest inna kolejność kolumn
         </span></span>
     </section>
     <section class="slide" style="background-color:black">
@@ -1044,11 +1053,16 @@
             <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
         </figure>
     </section>
+
     <section class="slide" style="background-color:black">
         <figure>
             <img class="cover" src="pictures/I34N.png" alt="blog">
             <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
         </figure>
+    </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Zmiana kolejności indeksu
+        </span></span>
     </section>
     <section class="slide" style="background-color:black">
         <figure>
@@ -1082,6 +1096,19 @@
             <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
         </figure>
     </section>
+    <section class="slide creamB">
+        <span class="shout colors"><span>Zmiana kolejności indeksu
+        </span></span>
+    </section>
+    <section class="slide" style="background-color:black">
+        <figure>
+            <img class="cover" src="pictures/I34N.png" alt="blog">
+            <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
+        </figure>
+    </section>
+
+
+
     <section class="slide" style="background-color:black">
         <figure>
             <img class="cover" src="pictures/I39N.png" alt="blog">
@@ -1320,12 +1347,12 @@
         </div>
     </section>
 
-    <section class="slide" style="background-color:black">
+    <!-- <section class="slide" style="background-color:black">
         <figure>
             <img class="cover" src="pictures/20.png" alt="blog">
             <figcaption class="white">Copyright © Cezary Walenciuk</figcaption>
         </figure>
-    </section>
+    </section> -->
     <section class="slide" style="background-color:black">
         <figure>
             <img class="cover" src="pictures/21.png" alt="blog">
@@ -1429,7 +1456,7 @@
         <span class="shout colors"><span>Indeksowanie, a JOIN-y i operacje
         </span></span>
     </section>
-    <section class="slide creamB  compact">
+    <section class="slide creamB small  compact">
         <h2>Jakiś słownik? Algorytmy scalajace rekordy</h2>
         <ol>
             <li class="next">Nested loop joins : to algorytm dwóch pętli chodząca po dwóch tabelach. Wykonują one operacje Join-owania. Wydajna gdy mamy indeksy</li>
@@ -1440,7 +1467,7 @@
     <section class="slide creamB  compact">
         <h2>Jakiś słownik? Słowa kluczowe Merge Join i Hash Join</h2>
         <ol>
-            <li class="next">Merge Joins :  Scala wartości dwóch tabel i później sortuje</li>
+            <li class="next">Merge Joins : Scala wartości dwóch tabel i później sortuje</li>
             <li class="next">Hash Joins : buduje w pamięci tabelę hash na bazie wewnętrznej dołączanej kolumny. Potem zewnętrzna tabelka jest porównywana z hash tabel.</li>
         </ol>
     </section>
@@ -1648,7 +1675,7 @@
     <section class="slide creamB  compact">
         <h2>Key Lookups</h2>
         <ol>
-            <li class="next">Single Row Seek: Poszukiwanie w rekordu w clustered index</li>
+            <li class="next">Single Row Seek: Poszukiwanie rekordu w clustered index</li>
             <li class="next">Pobiera kolumny które są wymagane, ale nie są przez indeks używane</li>
             <li class="next">Powolne jeśli jest duża liczba wyników</li>
         </ol>
@@ -1793,7 +1820,7 @@
         <ol>
             <li class="next">Możesz zaindeksować część rekordów w tabelce</li>
             <li class="next">Przydatne gdy wiesz, że pewne dane nie powinny być odczytywane</li>
-            <li class="next">Nie działa z zapytaniami które maja parametry</li>
+            <li class="next">Nie działa z zapytaniami które mają parametry</li>
         </ol>
     </section>
     <section class="slide prism over bhgry">
@@ -2032,14 +2059,14 @@
         <h2>Indeksy ColumnStore</h2>
         <ol>
             <li class="next">Pojawił się w SQL Server 2012, ale dopiero teraz działa on dobrze</li>
-            <li class="next">Są to zupełnie inne indexy gdzie dane są przetrzymywane innaczej</li>
+            <li class="next">Są to zupełnie inne indexy. Gdzie dane są przetrzymywane innaczej</li>
             <li class="next">Dane z kolumn są przechowywane razem</li>
         </ol>
     </section>
     <section class="slide creamB  compact">
         <h2>Indeksy ColumnStore</h2>
         <ol>
-            <li class="next">Są skompresowane więc są super dla gigatycznych liczb rekordów np. 2 miliony</li>
+            <li class="next">Są skompresowane więc są super dla gigatycznej liczby rekordów np. 2 miliony</li>
         </ol>
     </section>
     <section class="slide creamB">
@@ -2188,7 +2215,7 @@
         <h2>ColumnStore </h2>
         <ol>
             <li class="next">Kompresja działa najlepiej dla powtarzających się danych</li>
-            <li class="next">Nie może być używany do operacji "SEEK" (operacja 'SEEK' zamienia się w opracje 'Scan')</li>
+            <li class="next">Nie może być używany do operacji "SEEK" (operacja 'SEEK' zamienia się w operacje 'Scan')</li>
         </ol>
     </section>
     <section class="slide creamB  compact">
@@ -2352,7 +2379,7 @@
         </figure>
     </section>
     <section class="slide creamB">
-        <span class="shout colors"><span>Zrobiłem losowe 18000 updatów, aby się upewnić jak są one traktowane przez Columnstore Index
+        <span class="shout colors"><span>Jeszcze 18000 update-ów
         </span></span>
     </section>
     <section class="slide" style="background-color:black">
